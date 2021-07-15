@@ -40,9 +40,9 @@ if "%*" == "" (
 	echo                  --delete_fixes=false
 	echo.
 	echo Options:
+	echo     --book_id=^<number^>
 	echo     --config=^<string^>
 	echo     --start_page=^<number^>
-	echo     --book_id=^<number^>
 	echo     --stop_page=^<number^>
 	echo     --djvu=[true^|false]
 	echo     --paused=[true^|false]
