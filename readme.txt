@@ -11,11 +11,6 @@
 Подготовка:
 	Установить Python 3 и пакеты зависимостей скриптов
 	В header.json нужно прописать поле "Cookie" из заголовка запроса
-
-Требования:
-	ImageMagick
-	pdf2djvu
-	rsvg-convert
 	
 Использование:
 	run_all.bat --book_id=<int> [--start_page=<int>] [--stop_page=<int>]
