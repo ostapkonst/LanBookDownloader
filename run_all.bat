@@ -32,8 +32,8 @@ set tmp_dir=temp
 set png_dir="%tmp_dir%\png"
 
 if "%*" == "" (
-	echo Usage: run_all [--config --start_page --book_id --stop_page --djvu
-	echo                 --paused --force --show_fixes --delete_fixes]
+	echo Usage: run_all --book_id [--config] [--start_page] [--stop_page] [--djvu]
+	echo               [--paused] [--force] [--show_fixes] [--delete_fixes]
 	echo.
 	echo Default: run_all --config=^"header.json^" --start_page=1 --stop_page=-1
 	echo                  --djvu=false --paused=true --force=false --show_fixes=false
