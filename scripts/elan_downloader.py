@@ -86,7 +86,7 @@ def download_svg(book_id, start_page, stop_page, svg_dir):
 			if os.path.isfile(out_file):
 				stop = min(stop + 1, stop_page)
 				print("SKIPPED FILE:", file_name)
-				page +=1
+				page += 1
 				continue
 
 			get_pages_count(book_id) # Без вызова, ЭБС Лань отстрелит дальнейшие запросы страниц
@@ -103,7 +103,7 @@ def download_svg(book_id, start_page, stop_page, svg_dir):
 				downloaded_files += 1
 
 			print("SAVED FILE:", file_name)
-			page +=1
+			page += 1
 
 		if page > stop_page: break
 
