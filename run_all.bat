@@ -74,7 +74,7 @@ if "%book_id%"=="" (
 	goto finish
 )
 
-set png_dir="%tmp_dir%\png"
+set png_dir="%tmp_dir%\%book_id%_png"
 set svg_dir="%tmp_dir%\%book_id%_svg"
 set pdf_dir="%tmp_dir%\%book_id%_pdf"
 set pdf_file="books\%book_id%_book.pdf"

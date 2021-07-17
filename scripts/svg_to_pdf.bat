@@ -63,7 +63,6 @@ if !cnt!==0 (
 	goto finish
 )
 
-rmdir /s /q %png_dir% >nul 2>&1
 mkdir "%png_dir%" >nul 2>&1
 mkdir "%pdf_dir%" >nul 2>&1
 
