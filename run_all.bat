@@ -1,7 +1,7 @@
 @setlocal EnableExtensions
 @echo off
 
-set config="header.json"
+set config=header.json
 set start_page=1
 set book_id=
 set stop_page=-1
@@ -98,7 +98,7 @@ if /i "%djvu%"=="false" (
 :start
 @echo on
 
-scripts\elan_downloader.py --config=%config% --book_id=%book_id% --svg_dir=%svg_dir% --start_page=%start_page% --stop_page=%stop_page%
+scripts\elan_downloader.py --config="%config%" --book_id=%book_id% --svg_dir=%svg_dir% --start_page=%start_page% --stop_page=%stop_page%
 @set /a errors+=%errorlevel%
 cmd /c scripts\svg_to_pdf.bat --svg_dir=%svg_dir% --pdf_dir=%pdf_dir% --png_dir=%png_dir%
 @set /a errors+=%errorlevel%
