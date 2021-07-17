@@ -15,7 +15,6 @@ downloaded_files = 0
 
 # Нужно добавить Cookie поле в header.json
 header_lan = {
-	'Host': 'fs2.e.lanbook.com',
 	'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36',
 	'Accept': '*/*',
 	'Accept-Encoding': 'gzip, deflate, br',
@@ -43,16 +42,6 @@ def merge_config(config_file):
 		raise Exception(f"Failed to read config file {config_file} as json")
 
 
-def run_once(f):
-	def wrapper(*args, **kwargs):
-		if not wrapper.has_run:
-			wrapper.has_run = True
-			return f(*args, **kwargs)
-	wrapper.has_run = False
-	return wrapper
-
-
-@run_once
 def get_pages_count(book_id):
 	url = f'https://e.lanbook.com/reader/book/{book_id}/'
 	rsp = requests.get(url, headers=header_lan)
@@ -71,7 +60,8 @@ def download_svg(book_id, start_page, stop_page, svg_dir):
 	global downloaded_files
 
 	os.path.isdir(svg_dir) or os.makedirs(svg_dir)
-	header_lan['Referer'] = 'https://e.lanbook.com/reader/book/{id}/'.format(id=book_id)
+	headers = dict(header_lan)
+	headers['Referer'] = 'https://e.lanbook.com/reader/book/{id}/'.format(id=book_id)
 	url_pages = 'https://fs2.e.lanbook.com/api/book/{id}/page/{page}/img'.format(id=book_id, page='{page}')
 
 	page = start_page
@@ -89,8 +79,7 @@ def download_svg(book_id, start_page, stop_page, svg_dir):
 				page += 1
 				continue
 
-			get_pages_count(book_id) # Без вызова, ЭБС Лань отстрелит дальнейшие запросы страниц
-			rsp = requests.get(url_pages.format(page=page), headers=header_lan)
+			rsp = requests.get(url_pages.format(page=page), headers=headers)
 
 			if rsp.status_code != requests.codes.ok:
 				raise Exception(f"Failed download page: {page} with status code: {rsp.status_code}")
@@ -112,6 +101,15 @@ def download_svg(book_id, start_page, stop_page, svg_dir):
 		time.sleep(pause)
 
 
+def check_cookie():
+	headers = dict(header_lan)
+	headers['Referer'] = 'https://e.lanbook.com/cabinet/favorites'
+	url = 'https://e.lanbook.com/api/v2/cabinet/favorites'
+
+	rsp = requests.get(url, headers=headers)
+	return rsp.status_code == requests.codes.ok
+
+
 if __name__ == '__main__':
 	parser = create_parser()
 	ns = parser.parse_args()
@@ -119,13 +117,17 @@ if __name__ == '__main__':
 	print("START DOWNLOAD")
 	try:
 		merge_config(ns.config)
+		if not check_cookie():
+			raise Exception("Session is out of date, you need to get a new one")
 
 		ns.start_page = max(1, ns.start_page)
+		pages_from_site = get_pages_count(ns.book_id)
+		
 		if ns.stop_page is None or ns.stop_page < 1:
-			pages_from_site = get_pages_count(ns.book_id)
-			if pages_from_site == -1:
-				raise Exception("Failed parsed stop_page from e.lanbook")
 			ns.stop_page = pages_from_site
+			
+		if ns.stop_page == -1:
+			raise Exception("Failed parsed stop_page from e.lanbook")
 
 		count_files = max(0, ns.stop_page - ns.start_page + 1)
 		print("SELECTED", count_files, "FILES")
