@@ -29,7 +29,6 @@ if not %1/==/ (
 
 set errors=0
 set tmp_dir=temp
-set png_dir="%tmp_dir%\png"
 
 if "%*" == "" (
 	echo Usage: run_all --book_id [--config] [--start_page] [--stop_page] [--djvu]
@@ -56,15 +55,15 @@ if "%*" == "" (
 
 echo START ALL
 
-if /i not "%show_fixes%"=="false" (
-	echo.
-	scripts\show_fixes.py --search_dir="%tmp_dir%"
-	goto finish
-)
-
 if /i not "%delete_fixes%"=="false" (
 	echo.
 	scripts\show_fixes.py --search_dir="%tmp_dir%" --delete
+	goto finish
+)
+
+if /i not "%show_fixes%"=="false" (
+	echo.
+	scripts\show_fixes.py --search_dir="%tmp_dir%"
 	goto finish
 )
 
@@ -75,6 +74,7 @@ if "%book_id%"=="" (
 	goto finish
 )
 
+set png_dir="%tmp_dir%\png"
 set svg_dir="%tmp_dir%\%book_id%_svg"
 set pdf_dir="%tmp_dir%\%book_id%_pdf"
 set pdf_file="books\%book_id%_book.pdf"
