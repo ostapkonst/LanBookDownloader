@@ -36,7 +36,7 @@ def merge_config(config_file):
 	global header_lan
 	try:
 		with open(config_file, 'r') as f:
-			json_config = json.loads(f.read())
+			json_config = json.load(f)
 			header_lan = {**header_lan, **json_config}
 	except:
 		raise Exception(f"Failed to read config file {config_file} as json")
@@ -101,7 +101,7 @@ def download_svg(book_id, start_page, stop_page, svg_dir):
 		time.sleep(pause)
 
 
-def check_cookie():
+def check_session():
 	headers = dict(header_lan)
 	headers['Referer'] = 'https://e.lanbook.com/cabinet/favorites'
 	url = 'https://e.lanbook.com/api/v2/cabinet/favorites'
@@ -117,7 +117,7 @@ if __name__ == '__main__':
 	print("START DOWNLOAD")
 	try:
 		merge_config(ns.config)
-		if not check_cookie():
+		if not check_session():
 			raise Exception("Session is out of date, you need to get a new one")
 
 		ns.start_page = max(1, ns.start_page)
